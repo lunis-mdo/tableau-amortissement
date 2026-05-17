@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculateur de tableau d'amortissement</title>
+    <style>
+        h1 {
+            color: #B55239; 
+            text-align: center;
+            font-family: 'Montserrat', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        h2{
+            color: #B55239;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        h3 {
+            text-align : center;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            color : #4eb47c;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        table {
+            font-family: Inter, Tahoma, sans-serif;
+            margin: auto;
+            border-radius: 10px;
+        }
+        tr {
+            font-family: Inter, Tahoma, Arial, sans-serif;
+        }
+        input {
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            width: 80px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+        input:focus {
+            border-color: #4eb47c; 
+        }
+        input:hover {
+            border-color: #4eb47c;
+        }
+        /* Supprime les flèches */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        button {
+            display: block;          /* transforme le bouton en bloc pour centrer */
+            margin: 20px auto;       /* centre horizontalement et espace vertical */
+            width: 200px;            /* contrôle la largeur */
+            height: 50px;            /* contrôle la hauteur */
+            background-color: #5FAF8E; /* vert vivant */
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            background-color: #4CAF84; /* un vert un peu plus vif au survol */
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Calculateur d'amortissement de prêt</h1>
+    <h2>Génère le tableau d'amortissement de ton crédit en 3 secondes.</h2>
+    <p>Pour créer ton échéancier, indique les données suivantes :</p>
+    <form action = "/calculer" method="POST">
+
+    <label for="capital">Capital emprunté en € </label>
+    <input type="number" name="capital" step="0.01" min="0.00" value="{{ entrees.get('capital', '') }}" >
+    <br><br>
+
+    <label for="duree">Durée de l'emprunt en années </label>
+    <input type="number" name="duree" step="1" min="0" value="{{ entrees.get('duree', '') }}" >
+    <br><br>
+
+    <label for="interets">Taux d'intérêts en % </label>
+    <input type="number" name="interets" step="0.01" min="0" value="{{ entrees.get('interets', '') }}">
+    <br><br>
+    
+    <label for="assurance">Taux d'assurance en % </label>
+    <input type="number" name="assurance" step="0.01" min="0" value="{{ entrees.get('assurance', '') }}">
+    <br><br>
+    <button type="submit">Générer le tableau</button>
+    </form>
+    <hr color="white"> {% if totaux %}
+        <h3>Totaux :</h3>
+        <table border="2" style="width:80%; border-collapse: collapse; text-align: center; border-radius: 10px;">
+            <thead> 
+                <tr style="background-color:#4eb47c;">
+                    <th>Mois</th>
+                    <th>Intérêts</th>
+                    <th>Assurance</th>
+                    <th>Remboursement total sans assurance</th>
+                    <th>Remboursement total avec assurance</th>
+                </tr>   
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ totaux.mois_totaux }}</td>
+                    <td>{{ totaux.interets_totaux }} €</td>
+                    <td>{{ totaux.assur_totaux }} €</td>
+                    <td>{{ totaux.remboursement_total_sans_assur }} €</td>
+                    <td>{{ totaux.remboursement_total }} €</td>
+                </tr>
+            </tbody>
+        </table>
+        {% endif %}  
+    <hr color="white"> {% if resultats %}
+        <h3>Tableau d'amortissement :</h3>
+        <table border="2" style="width:80%; border-collapse: collapse; text-align: center; border-radius: 10px;">
+            <thead>
+                <tr style="background-color:#4eb47c;">
+                    <th>Mois</th>
+                    <th>Intérêts</th>
+                    <th>Amortissement</th>
+                    <th>Assurance</th>
+                    <th>Mensualité Totale</th>
+                    <th>Capital Restant</th>
+                </tr>
+                
+            </thead>
+            <tbody>
+                {% for ligne in resultats %}
+                <tr>
+                    <td>{{ ligne.mois }}</td>
+                    <td>{{ ligne.interets_du_mois }} €</td>
+                    <td>{{ ligne.capital_remb_mois }} €</td>
+                    <td>{{ ligne.mensu_assur }} €</td>
+                    <td>{{ ligne.mensu_total }} €</td>
+                    <td>{{ ligne.capital_restant }} €</td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+    {% endif %}  
+</body>
+</html>
