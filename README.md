@@ -1,6 +1,7 @@
 # Tableau d'amortissement de prêt
 
 Application web qui génère un tableau d'amortissement complet à partir des paramètres d'un emprunt immobilier.
+Mon but avec ce projet est d'apprendre à construire une app à partir de Python, pour un cas d'usage réel.
 
 ## Fonctionnalités
 
